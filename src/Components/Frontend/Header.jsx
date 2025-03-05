@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import logo from "../../Assets/Images/Frontend/logo.png";
 import { FaHome, FaInfoCircle, FaBars, FaTimes, FaUtensils, FaPhoneAlt, FaSearch, FaShoppingCart, FaCommentDots } from "react-icons/fa";
 
@@ -54,7 +54,7 @@ const Header = () => {
             if (!isMenuOpen) {
                 setIsMenuOpen(false);
             }
-        }, 300);
+        }, 100);
     };
 
     const handleMouseEnterDropdown = () => {
@@ -75,7 +75,7 @@ const Header = () => {
                 Welcome to our Bakery
             </div>
 
-            <nav className={`transition-all duration-300 ${isSticky ? "fixed top-0 left-0 w-full z-50 bg-white shadow-md" : "relative"} ${hasShadow ? "shadow-md" : "shadow-none"}`}>
+            <nav className={`transition-all duration-300 ${isSticky ? "fixed top-0 left-0 w-full z-40 bg-white shadow-md" : "relative"} ${hasShadow ? "shadow-md" : "shadow-none"}`}>
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between py-1 px-6">
                         <button onClick={handleHomeClick} className="focus:outline-none">
@@ -102,16 +102,16 @@ const Header = () => {
                                     <FaUtensils /> Menu ▾
                                 </button>
                                 <ul
-                                    className={`absolute mt-2 w-40 bg-white border border-gray-200 shadow-md rounded-md left-1/2 transform -translate-x-1/2 z-50 ${isMenuOpen ? "block" : "hidden"}`}
+                                    className={`absolute mt-2 w-40 bg-white border border-gray-200 shadow-md rounded-md left-1/2 transform -translate-x-1/2 z-60 ${isMenuOpen ? "block" : "hidden"}`}
                                     onMouseEnter={handleMouseEnterDropdown}
                                     onMouseLeave={handleMouseLeaveDropdown}
                                 >
-                                    <li><a href="http://localhost:5173/menu/biscuits" className="block px-4 py-2 hover:bg-[#4B2C35] hover:text-white duration-200 w-full text-left">Biscuits & Cookies</a></li>
-                                    <li><a href="http://localhost:5173/menu/brownies" className="block px-4 py-2 hover:bg-[#4B2C35] hover:text-white duration-200 w-full text-left">Brownies & Cupcakes</a></li>
-                                    <li><a href="http://localhost:5173/menu/cakes" className="block px-4 py-2 hover:bg-[#4B2C35] hover:text-white duration-200 w-full text-left">Cakes</a></li>
-                                    <li><a href="http://localhost:5173/menu/sandwiches&donuts" className="block px-4 py-2 hover:bg-[#4B2C35] hover:text-white duration-200 w-full text-left">Sandwiches & Donuts</a></li>
-                                    <li><a href="http://localhost:5173/menu/sundae" className="block px-4 py-2 hover:bg-[#4B2C35] hover:text-white duration-200 w-full text-left">Sundae & Valuepacks</a></li>
-                                    <li><a href="http://localhost:5173/menu/sweets&salts" className="block px-4 py-2 hover:bg-[#4B2C35] hover:text-white duration-200 w-full text-left">Sweets & Salts</a></li>
+                                    <li><Link to="/menu/biscuits" className="block px-4 py-2 hover:bg-[#4B2C35] hover:text-white duration-200 w-full text-left">Biscuits & Cookies</Link></li>
+                                    <li><Link to="/menu/brownies" className="block px-4 py-2 hover:bg-[#4B2C35] hover:text-white duration-200 w-full text-left">Brownies & Cupcakes</Link></li>
+                                    <li><Link to="/menu/cakes" className="block px-4 py-2 hover:bg-[#4B2C35] hover:text-white duration-200 w-full text-left">Cakes</Link></li>
+                                    <li><Link to="/menu/sandwiches&donuts" className="block px-4 py-2 hover:bg-[#4B2C35] hover:text-white duration-200 w-full text-left">Sandwiches & Donuts</Link></li>
+                                    <li><Link to="/menu/sundae" className="block px-4 py-2 hover:bg-[#4B2C35] hover:text-white duration-200 w-full text-left">Sundae & Valuepacks</Link></li>
+                                    <li><Link to="/menu/sweets&salts" className="block px-4 py-2 hover:bg-[#4B2C35] hover:text-white duration-200 w-full text-left">Sweets & Salts</Link></li>
                                 </ul>
                             </li>
                             <li>
@@ -125,18 +125,6 @@ const Header = () => {
                                 </button>
                             </li>
                         </ul>
-
-                        <div className="flex items-center gap-4">
-                            <form onSubmit={(e) => e.preventDefault()} className="hidden md:flex items-center bg-gray-100 rounded-lg p-2">
-                                <input type="text" placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="bg-transparent outline-none text-[#8B5A2B] placeholder-[#8B5A2B]" />
-                                <button type="submit" className="text-[#8B5A2B] hover:text-[#D4A017] transition duration-300">
-                                    <FaSearch />
-                                </button>
-                            </form>
-                            <button onClick={() => smoothScroll("Cart")} className="text-[#8B5A2B] hover:text-[#D4A017] transition duration-300">
-                                <FaShoppingCart className="text-2xl" />
-                            </button>
-                        </div>
 
                         <button className="md:hidden p-2 rounded focus:outline-none transition duration-300 text-[#8B5A2B]" onClick={() => setIsOpen(!isOpen)}>
                             {isOpen ? <FaTimes className="w-6 h-6" /> : <FaBars className="w-6 h-6" />}

@@ -6,6 +6,7 @@ import AddMenu from "../Components/Admin/Menu/Add-Menu";
 import Testimonials from "../Components/Admin/Testimonials/Testimonials";
 import NotFound from "../Components/Other/404";
 import ViewMenu from "../Components/Admin/Menu/View-Menu";
+import AddFav from "../Components/Admin/Customerfav/Add-Fav";
 
 const AdminRoute = [{
     element: <Protected />,
@@ -33,7 +34,12 @@ const AdminRoute = [{
                 {
                     path: "/admin/view-menu/:id?",
                     element: < ViewMenu/>
+                },
+                {
+                    path: "/admin/add-customerfav",
+                    element: <AddFav />
                 }
+
             ]
         }
     ]

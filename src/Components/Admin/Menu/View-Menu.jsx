@@ -10,7 +10,7 @@ import { Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { getDocs, collection, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../../Firebase/firebaseConfig";
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ViewMenu = () => {
@@ -31,9 +31,40 @@ const ViewMenu = () => {
   };
 
   const handleDel = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
-    if (!confirmDelete) return;
+    // Show a confirmation toast
+    toast.info(
+      <div>
+        <p>Are you sure you want to delete this product?</p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
+          <Button
+            variant="contained"
+            size="small"
+            sx={{ backgroundColor: '#d2ac47', color: '#fff', '&:hover': { backgroundColor: '#b8943c' } }}
+            onClick={() => {
+              toast.dismiss(); // Dismiss the toast
+              confirmDelete(id); // Proceed with deletion
+            }}
+          >
+            Yes
+          </Button>
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{ borderColor: '#d2ac47', color: '#d2ac47', '&:hover': { borderColor: '#b8943c', color: '#b8943c' } }}
+            onClick={() => toast.dismiss()} // Dismiss the toast
+          >
+            No
+          </Button>
+        </div>
+      </div>,
+      {
+        autoClose: false, // Don't auto-close the toast
+        closeButton: false, // Hide the default close button
+      }
+    );
+  };
 
+  const confirmDelete = async (id) => {
     try {
       await deleteDoc(doc(db, "bakeryItem", id));
       toast.success("Product deleted successfully!");
@@ -51,7 +82,7 @@ const ViewMenu = () => {
   return (
     <>
       <Box
-        id="menu"
+        id="viewmenu"
         sx={{
           pt: { xs: 4, sm: 12 },
           pb: { xs: 8, sm: 16 },
@@ -74,13 +105,13 @@ const ViewMenu = () => {
               textAlign: { sm: 'left', md: 'center' },
             }}
           >
-            <Typography component="h2" variant="h4" gutterBottom>
-              Menu
+            <Typography variant="h4" gutterBottom align='center' sx={{ color: "#d2ac47" }}>
+              Our Menu
             </Typography>
           </Box>
           <Link to="/admin/add-menu">
             <Button sx={{ borderColor: '#b8943c', color: "#b8943c", backgroundColor: "transparent" }} variant="outlined" size="large">
-              Add a Cake
+              Add an Item
             </Button>
           </Link>
           <Grid container spacing={4}>
@@ -152,6 +183,14 @@ const ViewMenu = () => {
           </Grid>
         </Container>
       </Box>
+      <ToastContainer
+        position="top-center"
+        autoClose={false}
+        hideProgressBar={true}
+        closeOnClick={false}
+        pauseOnHover={true}
+        draggable={false}
+      />
     </>
   );
 };

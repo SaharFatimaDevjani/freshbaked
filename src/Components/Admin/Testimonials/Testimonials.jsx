@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -28,19 +28,52 @@ const Testimonials = () => {
       setTestimonials(testimonials);
     } catch {
       console.log("Error fetching testimonials");
+      toast.error("Failed to fetch testimonials. Please try again.");
     }
   };
 
   const handleDel = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this testimonial?");
-    if (!confirmDelete) return;
+    // Show a confirmation toast
+    toast.info(
+      <div>
+        <p>Are you sure you want to delete this testimonial?</p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
+          <Button
+            variant="contained"
+            size="small"
+            sx={{ backgroundColor: '#d2ac47', color: '#fff', '&:hover': { backgroundColor: '#b8943c' } }}
+            onClick={() => {
+              toast.dismiss(); // Dismiss the toast
+              confirmDelete(id); // Proceed with deletion
+            }}
+          >
+            Yes
+          </Button>
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{ borderColor: '#d2ac47', color: '#d2ac47', '&:hover': { borderColor: '#b8943c', color: '#b8943c' } }}
+            onClick={() => toast.dismiss()} // Dismiss the toast
+          >
+            No
+          </Button>
+        </div>
+      </div>,
+      {
+        autoClose: false, // Don't auto-close the toast
+        closeButton: false, // Hide the default close button
+      }
+    );
+  };
 
+  const confirmDelete = async (id) => {
     try {
       await deleteDoc(doc(db, "testimonials", id));
-      toast.success("Testimonial deleted successfully");
+      toast.success("Testimonial deleted successfully!");
       getTestimonials();
     } catch (error) {
-      toast.error("Error deleting testimonial");
+      console.error("Error deleting testimonial:", error);
+      toast.error("Failed to delete testimonial. Please try again.");
     }
   };
 
@@ -131,6 +164,14 @@ const Testimonials = () => {
           ))}
         </Grid>
       </Container>
+      <ToastContainer
+        position="top-center"
+        autoClose={false}
+        hideProgressBar={true}
+        closeOnClick={false}
+        pauseOnHover={true}
+        draggable={false}
+      />
     </>
   );
 };

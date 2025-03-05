@@ -1,23 +1,28 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { getDocs, collection } from "firebase/firestore";
 import { db } from "../../Firebase/firebaseConfig";
-import MenuHeader from "./MenuHeader";
+import MenuHeader from "../../Components/Frontend/MenuHeader";
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+import { LoadingContext } from '../../Contexts/LoadingContext'; // Import the context
 
 const categories = [
   "Biscuits & Cookies",
   "Brownies & Cupcakes",
   "Cakes",
   "Sandwiches & Donuts",
-  "Sundae & Valuepacks", // Ensure this matches exactly
+  "Sundae & Valuepacks",
   "Sweets & Salts",
 ];
 
 const MainMenuPage = () => {
   const [products, setProducts] = useState([]);
+  const { setIsLoading } = useContext(LoadingContext); // Access setIsLoading
 
   // Fetch all bakery items from Firestore
   const getProducts = async () => {
+    setIsLoading(true); // Start loading
     try {
       const res = await getDocs(collection(db, 'bakeryItem'));
       const products = res.docs.map((doc) => ({
@@ -27,13 +32,16 @@ const MainMenuPage = () => {
       setProducts(products);
     } catch (error) {
       console.error("Error fetching products:", error);
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
   // Fetch products on component mount
   useEffect(() => {
     getProducts();
-  }, []);
+    AOS.init({ duration: 1000 });
+  }, [setIsLoading]);
 
   // Categorize products
   const categorizedProducts = categories.map((category) => ({
@@ -44,23 +52,17 @@ const MainMenuPage = () => {
   const scrollToCategory = (category) => {
     const section = document.getElementById(category);
     if (section) {
-      console.log("Scrolling to section:", section); // Debugging
       section.scrollIntoView({ behavior: "smooth", block: "start" });
-    } else {
-      console.error("Section not found:", category); // Debugging
     }
   };
 
   return (
     <>
-      {/* Pass scrollToCategory as a prop to MenuHeader */}
       <MenuHeader scrollToCategory={scrollToCategory} />
-
-      {/* Main Content */}
       <div className="px-24 py-12">
         {categorizedProducts.map((section) => (
           <div key={section.category} id={section.category} className="my-12">
-            <h2 className="text-3xl font-bold text-center mb-8 text-[#0F172B]">
+            <h2 className="text-3xl font-bold text-center mb-8 text-[#0F172B]" data-aos="fade-up">
               {section.category}
             </h2>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -68,6 +70,8 @@ const MainMenuPage = () => {
                 <div
                   key={index}
                   className="bg-gray-50 p-5 rounded-lg shadow-lg transform hover:scale-105 transition"
+                  data-aos="fade-up"
+                  data-aos-delay={index * 100}
                 >
                   <div className="group bg-white shadow-md rounded-lg overflow-hidden">
                     <img
@@ -85,11 +89,6 @@ const MainMenuPage = () => {
                   <p className="text-center text-[#FEA116] font-bold mb-3">
                     PKR : {item.price}
                   </p>
-                  <div className="flex justify-center">
-                    <button className="px-8 py-2 bg-[#D4A017] text-white rounded-lg shadow-lg font-semibold text-base hover:bg-[#B8860B] transition duration-300">
-                      Add to Cart
-                    </button>
-                  </div>
                 </div>
               ))}
             </div>

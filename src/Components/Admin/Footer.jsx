@@ -3,15 +3,14 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import IconButton from '@mui/material/IconButton';
-import InputLabel from '@mui/material/InputLabel';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from '@mui/icons-material/X';
 import logo from "../../Assets/Images/Admin/footerlogo.jpg";
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function Copyright() {
   return (
@@ -27,6 +26,47 @@ function Copyright() {
 }
 
 const Footer = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const headerMenu = [
+    {
+      path: "#customerfavourites",
+      name: "Customer Favourites",
+    },
+    {
+      path: "#testimonials",
+      name: "Testimonials",
+    },
+    {
+      path: "#viewmenu",
+      name: "View Menu",
+    },
+  ];
+
+  const handleLinkClick = (path) => {
+    if (location.pathname !== '/admin') {
+      // Navigate to /admin first
+      navigate('/admin', { state: { scrollTo: path } });
+    } else {
+      // Scroll to the section if already on /admin
+      const section = document.getElementById(path);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
+  // Handle scrolling after navigation to /admin
+  React.useEffect(() => {
+    if (location.pathname === '/admin' && location.state?.scrollTo) {
+      const section = document.getElementById(location.state.scrollTo);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [location]);
+
   return (
     <>
       <Container
@@ -56,46 +96,7 @@ const Footer = () => {
             }}
           >
             <Box sx={{ width: { xs: '100%', sm: '60%' } }}>
-              <img className='w-40'
-                src={logo} alt="logo" />
-              <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
-                Subscribe for the updates.
-              </Typography>
-              <InputLabel htmlFor="email-newsletter">Email</InputLabel>
-              <Stack direction="row" spacing={1} useFlexGap>
-                <TextField
-                  id="email-newsletter"
-                  hiddenLabel
-                  size="small"
-                  variant="outlined"
-                  fullWidth
-                  aria-label="Enter your email address"
-                  placeholder="Your email address"
-                  slotProps={{
-                    htmlInput: {
-                      autoComplete: 'off',
-                      'aria-label': 'Enter your email address',
-                    },
-                  }}
-                  sx={{ width: '250px' }}
-                />
-                <Button
-                  variant="outlined"
-                  size="small"
-                  sx={{
-                    flexShrink: 0,
-                    borderColor: '#d2ac47', // Golden border
-                    color: '#d2ac47', // Golden text
-                    '&:hover': {
-                      backgroundColor: '#fff', // White background on hover
-                      borderColor: '#d2ac47', // Golden border on hover
-                      color: '#d2ac47', // Golden text on hover
-                    },
-                  }}
-                >
-                  Subscribe
-                </Button>
-              </Stack>
+              <img className='w-40' src={logo} alt="logo" />
             </Box>
           </Box>
           <Box
@@ -108,101 +109,22 @@ const Footer = () => {
             <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
               Product
             </Typography>
-            <Link
-              color="text.secondary"
-              variant="body2"
-              href="#"
-              sx={{
-                '&:hover': {
-                  color: '#d2ac47', // Golden on hover
-                },
-              }}
-            >
-              Menu
-            </Link>
-            <Link
-              color="text.secondary"
-              variant="body2"
-              href="#"
-              sx={{
-                '&:hover': {
-                  color: '#d2ac47', // Golden on hover
-                },
-              }}
-            >
-              Testimonials
-            </Link>
-            <Link
-              color="text.secondary"
-              variant="body2"
-              href="#"
-              sx={{
-                '&:hover': {
-                  color: '#d2ac47', // Golden on hover
-                },
-              }}
-            >
-              Team
-            </Link>
-            <Link
-              color="text.secondary"
-              variant="body2"
-              href="#"
-              sx={{
-                '&:hover': {
-                  color: '#d2ac47', // Golden on hover
-                },
-              }}
-            >
-              Customer favourites
-            </Link>
-            <Link
-              color="text.secondary"
-              variant="body2"
-              href="#"
-              sx={{
-                '&:hover': {
-                  color: '#d2ac47', // Golden on hover
-                },
-              }}
-            >
-              FAQs
-            </Link>
-          </Box>
-          <Box
-            sx={{
-              display: { xs: 'none', sm: 'flex' },
-              flexDirection: 'column',
-              gap: 1,
-            }}
-          >
-            <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
-              Company
-            </Typography>
-            <Link
-              color="text.secondary"
-              variant="body2"
-              href="#"
-              sx={{
-                '&:hover': {
-                  color: '#d2ac47', // Golden on hover
-                },
-              }}
-            >
-              Team
-            </Link>
-            <Link
-              color="text.secondary"
-              variant="body2"
-              href="#"
-              sx={{
-                '&:hover': {
-                  color: '#d2ac47', // Golden on hover
-                },
-              }}
-            >
-              Testimonials
-            </Link>
+            {headerMenu.map((item, index) => (
+              <Link
+                key={index}
+                color="text.secondary"
+                variant="body2"
+                href="#"
+                onClick={() => handleLinkClick(item.path)}
+                sx={{
+                  '&:hover': {
+                    color: '#d2ac47', // Golden on hover
+                  },
+                }}
+              >
+                {item.name}
+              </Link>
+            ))}
           </Box>
         </Box>
         <Box
@@ -254,7 +176,7 @@ const Footer = () => {
             <IconButton
               color="inherit"
               size="small"
-              href="https://github.com/mui"
+              href="https://facebook.com/mui"
               aria-label="GitHub"
               sx={{
                 alignSelf: 'center',

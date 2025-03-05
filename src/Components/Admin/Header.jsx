@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { auth } from '../../Firebase/firebaseConfig';
-import { Link } from 'react-scroll';
-import { useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { styled, alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import AppBar from '@mui/material/AppBar';
@@ -15,18 +14,20 @@ import Drawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import logo from "../../Assets/Images/Frontend/logo.png";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
   flexShrink: 0,
-  borderRadius: `calc(${theme.shape.borderRadius}px + 8px)`, // Corrected template literal
+  borderRadius: `calc(${theme.shape.borderRadius}px + 8px)`,
   backdropFilter: 'blur(24px)',
   border: '1px solid',
   borderColor: (theme.vars || theme).palette.divider,
   backgroundColor: theme.vars
-    ? `rgba(${theme.vars.palette.background.defaultChannel} / 0.4)` // Corrected template literal
+    ? `rgba(${theme.vars.palette.background.defaultChannel} / 0.4)`
     : alpha(theme.palette.background.default, 0.4),
   boxShadow: (theme.vars || theme).shadows[1],
   padding: '8px 12px',
@@ -34,23 +35,50 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 
 export default function Header() {
   const [open, setOpen] = React.useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
 
-  const navigate = useNavigate();
-
   const signOut = async () => {
-    const confirmation = window.confirm("Are you sure you want to logout?");
-    if (confirmation) {
-      try {
-        await auth.signOut();
-        navigate('/signin');
-      } catch (error) {
-        console.log("Logout error", error);
+    // Show a confirmation toast
+    toast.info(
+      <div>
+        <p>Are you sure you want to logout?</p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
+          <Button
+            variant="contained"
+            size="small"
+            sx={{ backgroundColor: '#d2ac47', color: '#fff', '&:hover': { backgroundColor: '#b8943c' } }}
+            onClick={async () => {
+              toast.dismiss(); // Dismiss the toast
+              try {
+                await auth.signOut();
+                navigate('/signin');
+              } catch (error) {
+                console.log("Logout error", error);
+              }
+            }}
+          >
+            Yes
+          </Button>
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{ borderColor: '#d2ac47', color: '#d2ac47', '&:hover': { borderColor: '#b8943c', color: '#b8943c' } }}
+            onClick={() => toast.dismiss()} // Dismiss the toast
+          >
+            No
+          </Button>
+        </div>
+      </div>,
+      {
+        autoClose: false, // Don't auto-close the toast
+        closeButton: false, // Hide the default close button
       }
-    }
+    );
   };
 
   const headerMenu = [
@@ -59,18 +87,34 @@ export default function Header() {
       name: "Customer Favourites",
     },
     {
-      path: "menu",
-      name: "Menu",
-    },
-    {
       path: "testimonials",
       name: "Testimonials",
     },
     {
-      path: "faqs",
-      name: "FAQs",
+      path: "viewmenu",
+      name: "View Menu",
     },
   ];
+
+  const handleLinkClick = (path) => {
+    if (location.pathname !== '/admin') {
+      navigate(`/admin`, { state: { scrollTo: path } });
+    } else {
+      const section = document.getElementById(path);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
+  React.useEffect(() => {
+    if (location.pathname === '/admin' && location.state?.scrollTo) {
+      const section = document.getElementById(location.state.scrollTo);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [location]);
 
   return (
     <AppBar
@@ -81,6 +125,7 @@ export default function Header() {
         bgcolor: 'transparent',
         backgroundImage: 'none',
         mt: 'calc(var(--template-frame-height, 0px) + 28px)',
+        zIndex: 1,
       }}
     >
       <Container maxWidth="lg">
@@ -89,10 +134,14 @@ export default function Header() {
             <img className="w-40" src={logo} alt="logo" />
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
               {headerMenu.map((item, index) => (
-                <Button key={index} variant="text" color="info" size="small">
-                  <Link to={item.path} smooth={true} duration={500}>
-                    {item.name}
-                  </Link>
+                <Button
+                  key={index}
+                  variant="text"
+                  color="info"
+                  size="small"
+                  onClick={() => handleLinkClick(item.path)}
+                >
+                  {item.name}
                 </Button>
               ))}
             </Box>
@@ -134,16 +183,11 @@ export default function Header() {
                   </IconButton>
                 </Box>
 
-                <MenuItem>
-                  <Link to="menu" smooth={true} duration={500}>
-                    Menu
-                  </Link>
-                </MenuItem>
-                <MenuItem>
-                  <Link to="testimonials" smooth={true} duration={500}>
-                    Testimonials
-                  </Link>
-                </MenuItem>
+                {headerMenu.map((item, index) => (
+                  <MenuItem key={index} onClick={() => handleLinkClick(item.path)}>
+                    {item.name}
+                  </MenuItem>
+                ))}
 
                 <Divider sx={{ my: 3 }} />
                 <MenuItem>
@@ -156,6 +200,14 @@ export default function Header() {
           </Box>
         </StyledToolbar>
       </Container>
+      <ToastContainer
+        position="top-center"
+        autoClose={false}
+        hideProgressBar={true}
+        closeOnClick={false}
+        pauseOnHover={true}
+        draggable={false}
+      />
     </AppBar>
   );
 }

@@ -1,10 +1,14 @@
 import React from 'react'
 import { RouterProvider } from 'react-router-dom'
+import { LoadingProvider } from './Contexts/LoadingContext';
 import router from './AppRoutes/MainAppRoutes'
 
 const App = () => {
   return (
-    <RouterProvider router={router}/>
+    <LoadingProvider>
+<RouterProvider router={router}/>
+    </LoadingProvider>
+    
   )
 }
 

@@ -36,7 +36,7 @@ const AddMenuContainer = styled(Stack)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  backgroundColor: '#1a1a1a', // Changed to match CustomerFav background
+  backgroundColor: '#1a1a1a', // Dark background
 }));
 
 const AddMenuButton = styled(Button)({
@@ -108,13 +108,15 @@ const AddMenu = () => {
   const [formData, setFormData] = useState({
     title: "",
     category: "",
-    image: null,
-    price: null,
-    quantity: null,
+    image: "",
+    price: "",
+    quantity: "",
     time: "",
     description: "",
     availability: "Available",
   });
+
+  const [isSubmitting, setIsSubmitting] = useState(false); // State to track form submission
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -164,8 +166,7 @@ const AddMenu = () => {
       !formData.time ||
       !formData.description ||
       !formData.price ||
-      !formData.quantity ||
-      !fileUpload.file
+      !formData.quantity
     ) {
       toast.error("Please fill all fields");
       return;
@@ -176,20 +177,27 @@ const AddMenu = () => {
       return;
     }
 
+    // Image is mandatory only when adding a new product
+    if (!params.id && !fileUpload.file) {
+      toast.error("Please upload an image.");
+      return;
+    }
+
+    setIsSubmitting(true); // Disable the submit button
+
     try {
       let image_url = formData.image;
 
       if (fileUpload.file) {
         const res = await uploadFile();
         image_url = res.data.secure_url;
-        setFormData({ ...formData, image: image_url });
       }
 
       const updatedFormData = {
         title: formData.title || "",
         category: formData.category || "",
-        price: formData.price || 0,
-        quantity: formData.quantity || 0,
+        price: formData.price || "",
+        quantity: formData.quantity || "",
         time: formData.time || "",
         description: formData.description || "",
         availability: formData.availability || "Available",
@@ -210,12 +218,13 @@ const AddMenu = () => {
         toast.success("Product added successfully!");
       }
 
+      // Reset form fields
       setFormData({
         title: "",
         category: "",
-        image: null,
-        price: null,
-        quantity: null,
+        image: "",
+        price: "",
+        quantity: "",
         time: "",
         description: "",
         availability: "Available",
@@ -226,10 +235,11 @@ const AddMenu = () => {
       });
       document.getElementById("file-upload").value = "";
 
-      navigate("/admin/");
     } catch (error) {
       console.error("Error adding/updating document:", error);
       toast.error("Failed to add/update product. Please try again.");
+    } finally {
+      setIsSubmitting(false); // Re-enable the submit button
     }
   };
 
@@ -252,7 +262,7 @@ const AddMenu = () => {
   return (
     <>
       <style>{globalStyles}</style>
-      <AddMenuContainer>
+      <AddMenuContainer id="addmenu"> {/* Added id for linking */}
         <Card>
           <Typography variant="h4" sx={{ fontSize: '24px', fontWeight: '600', textAlign: 'center', my: 2, color: '#d2ac47' }}>
             Manage Products
@@ -383,8 +393,12 @@ const AddMenu = () => {
               </Box>
             </FormControl>
 
-            <AddMenuButton type="submit" fullWidth>
-              Submit
+            <AddMenuButton
+              type="submit"
+              fullWidth
+              disabled={isSubmitting} // Disable button during submission
+            >
+              {isSubmitting ? "Submitting..." : "Submit"}
             </AddMenuButton>
 
             <ViewMenuButton

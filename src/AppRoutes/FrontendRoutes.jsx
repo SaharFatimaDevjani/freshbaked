@@ -2,8 +2,8 @@ import React from 'react';
 import FrontendLayout from '../Layout/Frontend/index';
 import Home from '../Pages/Frontend/Home';
 import NotFound from '../Components/Other/404';
-import MainMenuPage from '../Components/Frontend/MainMenuPage';
-import MenuCategories from '../Components/Frontend/MenuCategory';
+import MainMenuPage from '../Pages/Frontend/MainMenuPage';
+import MenuCategories from '../Pages/Frontend/MenuCategory';
 
 const FrontendRoute = [{
     element: <FrontendLayout />,
