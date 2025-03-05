@@ -63,7 +63,7 @@ const HomeCategory = () => {
               <img
                 src={category.image}
                 alt={category.name}
-                className="w-full h-44 object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
+                className="w-full h-44 object-cover transition-transform duration-500 ease-in-out group-hover:scale-130"
               />
             </div>
             <h3 className="text-xl font-semibold text-center text-gray-700 mt-3">

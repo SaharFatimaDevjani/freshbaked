@@ -6,7 +6,7 @@ const AboutUs = () => {
 
     return (
         <div id="About">
-            <section className="bg-white py-30">
+            <section className="py-30 bg-gray-100">
                 <div className="container mx-auto px-6 lg:px-16 flex flex-col lg:flex-row items-center gap-12">
                     {/* Image Section (Reduced Size) */}
                     <div className="w-full lg:w-[35%]" data-aos="fade-right">
