@@ -83,7 +83,7 @@ const MainMenuPage = () => {
                     {item.description}
                   </p>
                   <p className="text-center text-[#FEA116] font-bold mb-3">
-                    {item.price}
+                    PKR : {item.price}
                   </p>
                   <div className="flex justify-center">
                     <button className="px-8 py-2 bg-[#D4A017] text-white rounded-lg shadow-lg font-semibold text-base hover:bg-[#B8860B] transition duration-300">

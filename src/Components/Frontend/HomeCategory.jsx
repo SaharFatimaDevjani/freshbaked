@@ -1,42 +1,48 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import sundae from "../../Assets/Images/Frontend/sundaw.jpeg"
+import cakes from "../../Assets/Images/Frontend/chocolate-cake.jpg"
+import savories from "../../Assets/Images/Frontend/sweets and salts.jpg"
+import cookies from "../../Assets/Images/Frontend/cookies.jpg"
+import cupcakes from "../../Assets/Images/Frontend/cupcakes.jpg"
+import donuts from "../../Assets/Images/Frontend/donuts.jpg"
 
 const HomeCategory = () => {
   // Define categories with their respective details
   const categories = [
     {
       name: "Biscuits & Cookies",
-      image: "",
+      image:cookies,
       description: "Delicious and crunchy biscuits and cookies for every occasion.",
       link: "biscuits",
     },
     {
       name: "Brownies & Cupcakes",
-      image: "",
+      image:cupcakes,
       description: "Rich and decadent brownies and cupcakes to satisfy your sweet tooth.",
       link: "brownies",
     },
     {
       name: "Cakes",
-      image: "",
+      image:cakes,
       description: "Celebrate with our beautifully crafted cakes for all occasions.",
       link: "cakes",
     },
     {
       name: "Sandwiches & Donuts",
-      image: "",
+      image:donuts,
       description: "Tasty sandwiches and donuts for a quick and satisfying snack.",
       link: "sandwiches&donuts",
     },
     {
       name: "Sundae & Valuepacks",
-      image: "",
+      image:sundae,
       description: "Indulge in our creamy sundaes and value-packed deals.",
       link: "sundae",
     },
     {
       name: "Sweets & Salts",
-      image: "",
+      image:savories,
       description: "A perfect mix of sweet and salty treats for every craving.",
       link: "sweets&salts",
     },
