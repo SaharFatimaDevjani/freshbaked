@@ -1,139 +1,167 @@
-import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import logo from "./assets/images/logo web.jpg";
-import { FaHome , FaInfoCircle, FaBars, FaTimes, FaUtensils, FaPhoneAlt } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import logo from "../../Assets/Images/Frontend/logo.png";
+import { FaHome, FaInfoCircle, FaBars, FaTimes, FaUtensils, FaPhoneAlt, FaSearch, FaShoppingCart, FaCommentDots } from "react-icons/fa";
 
 const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
-    const [desktopDropdownOpen, setDesktopDropdownOpen] = useState(false);
-    const dropdownRef = useRef (null);
+    const [hasShadow, setHasShadow] = useState(false);
+    const [isSticky, setIsSticky] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const navigate = useNavigate();
 
-    useEffect(
-        () => {
-            function handleClickOutside(event) {
-                if (dropdownRef.current && !dropdownRef.current.contains(event.target)
-                ){
-                    setDesktopDropdownOpen(false);
-                    setMobileDropdownOpen(false);
-                }
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 40) {
+                setHasShadow(true);
+                setIsSticky(true);
+            } else {
+                setHasShadow(false);
+                setIsSticky(false);
+            }
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    const handleHomeClick = () => {
+        navigate("/"); // Navigate to the home page
+        scrollToTop(); // Scroll to the top after navigation
+    };
+
+    const smoothScroll = (sectionId) => {
+        navigate(`/#${sectionId}`);
+        const section = document.getElementById(sectionId);
+        if (section) {
+            const navbarHeight = 80;
+            const offsetTop = section.offsetTop - navbarHeight;
+            window.scrollTo({ top: offsetTop, behavior: "smooth" });
         }
-        if (desktopDropdownOpen || mobileDropdownOpen) {
-            document.addEventListener("mousedown", handleClickOutside);
+        setIsOpen(false); // Close the mobile menu after clicking an item
     };
-    return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-    };
-}, [desktopDropdownOpen , mobileDropdownOpen]);
 
-const [hasShadow , setHasShadow] = useState(false);
-useEffect(() => {
-    const handleScroll = () => {
-        if (window.scrollY > 100) {
-            setHasShadow(true);
-    }   else{
-        setHasShow(false);
-    }
-};
-window.addEventListener("scroll", handleScroll);
-return () => {
-    window.removeEventListener("scroll", handleScroll);
-};
-},[])
+    const handleMouseEnterMenu = () => {
+        setIsMenuOpen(true);
+    };
+
+    const handleMouseLeaveMenu = () => {
+        setTimeout(() => {
+            if (!isMenuOpen) {
+                setIsMenuOpen(false);
+            }
+        }, 300);
+    };
+
+    const handleMouseEnterDropdown = () => {
+        setIsMenuOpen(true);
+    };
+
+    const handleMouseLeaveDropdown = () => {
+        setTimeout(() => {
+            setIsMenuOpen(false);
+        }, 300);
+    };
+
     return (
         <>
-        <div className="bg-[#4B2C35] text-white text-sm py-2 text-center">
-            Welcome to our Bakery
-        </div>
-            <nav className={'fixed top-0 left-0 bg-white shadow-md w-full z-50 transition-all duration-300 ${hasShadow ? "shadow-md" : "shadow-none"}'}>
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between py-4 px-6">
-                 <Link to="/">
-                 <img src={logo} alt="Logo" className="w-40 h-14 object-contain"/>
-                 </Link>
-                 <ul className="hidden md:flex space-x-8 text-gray-800 font-medium flex-grow justify-center">
-                    <li>
-                     <Link to="/" className="flex items-center gap-2 hover:text-[#FEA116] transition-all duration-300 ease-in-out ">
-                    <FaHome/>Home
-                    </Link> 
-                    </li>
-                    <li>
-                     <Link to="/about" className="flex items-center gap-2 hover:text-[#FEA116] transition-all duration-300 ease-in-out ">
-                     <FaInfoCircle/>About Us
-                     </Link> 
-                     </li>
-                    <li className="relative group">
-                        <button className="flex items-center gap-2 hover:text-[#FEA116] transition:all duration-200 ease-in-out" onClick={()=>setDesktopDropdownOpen (!desktopDropdownOpen)}>
-                           <FaUtensils/> Menu ▾
-                        </button>
-                        {desktopDropdownOpen && (
-                            <ul className="absolute mt-2 w-40 bg-white border border-gray-200 shadow-md rounded-md left-1/2 transform -translate-x-1/2 transition-all duration-300 ease-in-out ${desktopDropdownOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`">
-                           <li>
-                            <Link to="/Menu/cakes" className="block px-4 py-2 hover:bg-gray-100 duration-200" onClick={() => setDesktopDropdownOpen(false)}>Cakes</Link>
-                           </li>
-                           <li>
-                            <Link to="/Menu/pastries" className="block px-4 py-2 hover:bg-gray-100 duration-200" onClick={() => setDesktopDropdownOpen(false)}>pastries & Brownies</Link>
-                           </li>
-                           <li>
-                            <Link to="/Menu/sandwiches" className="block px-4 py-2 hover:bg-gray-100 duration-200" onClick={() => setDesktopDropdownOpen(false)}>sandwiches</Link>
-                           </li>
-                            </ul>
-                        )}
-                    </li>
-                    <li> 
-                        <Link to="/contact" className="flex items-center gap-2 hover:text-[#FEA116] transition-all duration-300 ease-in-out">
-                    <FaPhoneAlt/>Contact
-                        </Link> 
-                    </li>
-                 </ul>
-                 <button className="md:hidden p-2 rounded focus:outline-none active:text-red-500 transition duration-300" onClick={() =>setIsOpen(!isOpen)}>
-                    {isOpen ? <FaTimes className="w-6 h-6 text-gray-800"/> : <FaBars className="w-6 h-6 text-gray-800" />}
-                 </button>
-                 </div>
-                 {/* Mobile View */}
-                <div className={`${isOpen ? "block" : "hidden"} md:hidden bg-white shadow-md rounded-lg p-4 absolute top-[75px] right-0 left-0 mx-4 z-50 transition-all duration-300`}>
-                  <ul className="flex flex-col space-y-4 text-center text-gray-800 font-medium">
-                   <li> 
-                    <Link to="/" className="flex items-center gap-2 justify-center py-2 hover:text-[#FEA116] transition" onClick={() => setIsOpen(false)}>
-                   <FaHome/>Home
-                   </Link> 
-                   </li>
-                   <li>
-                     <Link to="/about" className="flex items-center gap-2 justify-center py-2 hover:text-[#FEA116] transition" onClick={() => setIsOpen(false)}>
-                     <FaInfoCircle/>About
-                     </Link>
-                    </li>
-                   <li className="relative group w-full text-center" ref={dropdownRef}>
-                            <button 
-                                onClick={() => setMobileDropdownOpen(!mobileDropdownOpen)} 
-                                className="flex items-center gap-2 justify-center w-full py-2 hover:text-[#FEA116] transition:all duration-300 active:scale-105"
-                            >
-                              <FaUtensils/>  Menu ▾
-                            </button>
-                            {mobileDropdownOpen && (
-                                <ul className="mt-2 bg-white border border-gray-200 shadow-md rounded-md w-full text-center transition-all duration-300 ease-in-out ${mobileDropdownOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'">
-                                    <li>
-                                        <Link to="/shop/cakes" className="block px-4 py-2 hover:bg-gray-100 w-full" onClick={() => { setMobileDropdownOpen(false); setIsOpen(false); }}>Cakes</Link>
-                                    </li>
-                                    <li>
-                                        <Link to="/shop/pastries" className="block px-4 py-2 hover:bg-gray-100 w-full" onClick={() => { setMobileDropdownOpen(false); setIsOpen(false); }}>Pastries</Link>
-                                    </li>
-                                    <li>
-                                        <Link to="/shop/bread" className="block px-4 py-2 hover:bg-gray-100 w-full" onClick={() => { setMobileDropdownOpen(false); setIsOpen(false); }}>Bread</Link>
-                                    </li>
-                                </ul>
-                            )}
-                        </li>
-                   <li>
-                    <Link to="/Contact" className="flex items-center gap-2 justify-center py-2 hover:text-[#FEA116] transition" onClick={() => setIsOpen(false)}>
-                    <FaPhoneAlt/>Contact
-                    </Link>
-                    </li>
-                  </ul>
-                </div>
+            <style>{`html { scroll-behavior: smooth; }`}</style>
+
+            <div className="bg-[#4B2C35] text-white font-bold text-md py-2 text-center">
+                Welcome to our Bakery
             </div>
+
+            <nav className={`transition-all duration-300 ${isSticky ? "fixed top-0 left-0 w-full z-50 bg-white shadow-md" : "relative"} ${hasShadow ? "shadow-md" : "shadow-none"}`}>
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex items-center justify-between py-1 px-6">
+                        <button onClick={handleHomeClick} className="focus:outline-none">
+                            <img src={logo} alt="Logo" className="w-40 h-14 object-contain" />
+                        </button>
+
+                        <ul className="hidden md:flex py-4 space-x-8 text-[#8B5A2B] font-medium flex-grow justify-center">
+                            <li>
+                                <button onClick={handleHomeClick} className="flex items-center gap-2 hover:text-[#D4A017] transition-all duration-300">
+                                    <FaHome /> Home
+                                </button>
+                            </li>
+                            <li>
+                                <button onClick={() => smoothScroll("About")} className="flex items-center gap-2 hover:text-[#D4A017] transition-all duration-300">
+                                    <FaInfoCircle /> About Us
+                                </button>
+                            </li>
+                            <li
+                                className="relative"
+                                onMouseEnter={handleMouseEnterMenu}
+                                onMouseLeave={handleMouseLeaveMenu}
+                            >
+                                <button className="flex items-center gap-2 hover:text-[#D4A017] transition-all duration-200">
+                                    <FaUtensils /> Menu ▾
+                                </button>
+                                <ul
+                                    className={`absolute mt-2 w-40 bg-white border border-gray-200 shadow-md rounded-md left-1/2 transform -translate-x-1/2 z-50 ${isMenuOpen ? "block" : "hidden"}`}
+                                    onMouseEnter={handleMouseEnterDropdown}
+                                    onMouseLeave={handleMouseLeaveDropdown}
+                                >
+                                    <li><a href="http://localhost:5173/menu/biscuits" className="block px-4 py-2 hover:bg-[#4B2C35] hover:text-white duration-200 w-full text-left">Biscuits & Cookies</a></li>
+                                    <li><a href="http://localhost:5173/menu/brownies" className="block px-4 py-2 hover:bg-[#4B2C35] hover:text-white duration-200 w-full text-left">Brownies & Cupcakes</a></li>
+                                    <li><a href="http://localhost:5173/menu/cakes" className="block px-4 py-2 hover:bg-[#4B2C35] hover:text-white duration-200 w-full text-left">Cakes</a></li>
+                                    <li><a href="http://localhost:5173/menu/sandwiches&donuts" className="block px-4 py-2 hover:bg-[#4B2C35] hover:text-white duration-200 w-full text-left">Sandwiches & Donuts</a></li>
+                                    <li><a href="http://localhost:5173/menu/sundae" className="block px-4 py-2 hover:bg-[#4B2C35] hover:text-white duration-200 w-full text-left">Sundae & Valuepacks</a></li>
+                                    <li><a href="http://localhost:5173/menu/sweets&salts" className="block px-4 py-2 hover:bg-[#4B2C35] hover:text-white duration-200 w-full text-left">Sweets & Salts</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <button onClick={() => smoothScroll("Contact")} className="flex items-center gap-2 hover:text-[#D4A017] transition-all duration-300">
+                                    <FaPhoneAlt /> Contact
+                                </button>
+                            </li>
+                            <li>
+                                <button onClick={() => smoothScroll("Testimonials")} className="flex items-center gap-2 hover:text-[#D4A017] transition-all duration-300">
+                                    <FaCommentDots /> Testimonials
+                                </button>
+                            </li>
+                        </ul>
+
+                        <div className="flex items-center gap-4">
+                            <form onSubmit={(e) => e.preventDefault()} className="hidden md:flex items-center bg-gray-100 rounded-lg p-2">
+                                <input type="text" placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="bg-transparent outline-none text-[#8B5A2B] placeholder-[#8B5A2B]" />
+                                <button type="submit" className="text-[#8B5A2B] hover:text-[#D4A017] transition duration-300">
+                                    <FaSearch />
+                                </button>
+                            </form>
+                            <button onClick={() => smoothScroll("Cart")} className="text-[#8B5A2B] hover:text-[#D4A017] transition duration-300">
+                                <FaShoppingCart className="text-2xl" />
+                            </button>
+                        </div>
+
+                        <button className="md:hidden p-2 rounded focus:outline-none transition duration-300 text-[#8B5A2B]" onClick={() => setIsOpen(!isOpen)}>
+                            {isOpen ? <FaTimes className="w-6 h-6" /> : <FaBars className="w-6 h-6" />}
+                        </button>
+                    </div>
+
+                    <div className={`${isOpen ? "block" : "hidden"} md:hidden bg-white shadow-md rounded-lg p-4 absolute top-[75px] right-0 left-0 mx-4 z-50 transition-all duration-300`}>
+                        <form onSubmit={(e) => e.preventDefault()} className="flex items-center bg-gray-100 rounded-lg p-2 mb-4">
+                            <input type="text" placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="bg-transparent outline-none text-[#8B5A2B] placeholder-[#8B5A2B] flex-grow" />
+                            <button type="submit" className="text-[#8B5A2B] hover:text-[#D4A017] transition duration-300">
+                                <FaSearch />
+                            </button>
+                        </form>
+                        <ul className="flex flex-col space-y-4 text-center text-[#8B5A2B] font-medium">
+                            <li><button onClick={handleHomeClick} className="flex items-center gap-2 justify-center py-2 hover:text-[#D4A017] transition w-full"> <FaHome /> Home </button></li>
+                            <li><button onClick={() => smoothScroll("About")} className="flex items-center gap-2 justify-center py-2 hover:text-[#D4A017] transition w-full"> <FaInfoCircle /> About </button></li>
+                            <li><button onClick={() => smoothScroll("Menu")} className="flex items-center gap-2 justify-center py-2 hover:text-[#D4A017] transition w-full"> <FaUtensils /> Menu </button></li>
+                            <li><button onClick={() => smoothScroll("Contact")} className="flex items-center gap-2 justify-center py-2 hover:text-[#D4A017] transition w-full"> <FaPhoneAlt /> Contact </button></li>
+                            <li><button onClick={() => smoothScroll("Testimonials")} className="flex items-center gap-2 justify-center py-2 hover:text-[#D4A017] transition w-full"> <FaCommentDots /> Testimonials </button></li>
+                        </ul>
+                    </div>
+                </div>
             </nav>
         </>
-    )
-}
+    );
+};
+
 export default Header;
