@@ -248,6 +248,7 @@ const AddMenu = () => {
       const res = await getDoc(doc(db, "bakeryItem", id));
       const bakeryItem = { ...res.data() };
       setFormData(bakeryItem);
+      toast.success("Image loaded from database.");
     } catch {
       console.log("Error");
     }
@@ -384,6 +385,10 @@ const AddMenu = () => {
                 {fileUpload.file ? (
                   <Typography variant="body2" sx={{ mt: 1 }}>
                     Selected: {fileUpload.file.name}
+                  </Typography>
+                ) : formData.image ? (
+                  <Typography variant="body2" sx={{ mt: 1, color: '#666' }}>
+                    Using existing image from database.
                   </Typography>
                 ) : (
                   <Typography variant="body2" sx={{ mt: 1, color: '#666' }}>

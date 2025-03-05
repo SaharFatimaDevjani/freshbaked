@@ -141,8 +141,11 @@ const AddTestimonials = () => {
     setIsSubmitting(true); // Disable the button and change text
 
     try {
-      let imageUrl = await uploadFile();
-      if (!imageUrl) return;
+      let imageUrl = formData.image; // Use existing image URL by default
+      if (fileUpload.file) {
+        imageUrl = await uploadFile();
+        if (!imageUrl) return;
+      }
 
       const updatedFormData = { ...formData, image: imageUrl };
 
@@ -170,7 +173,9 @@ const AddTestimonials = () => {
     try {
       const res = await getDoc(doc(db, "testimonials", id));
       if (res.exists()) {
-        setFormData(res.data());
+        const data = res.data();
+        setFormData(data);
+        setPreviewImage(data.image); // Set the preview image from the database
       }
     } catch (error) {
       console.error("Error fetching data", error);
