@@ -41,8 +41,8 @@ App will run at http://localhost:5173
 
 ## 🔗 Live Demo & GitHub
 
-**Live Site:** https://lnkd.in/dY4QS27R  
-**GitHub Repository:** https://lnkd.in/dvYqrEkq
+**Live Site:** https://freshbaked.vercel.app/  
+**GitHub Repository:** https://github.com/SaharFatimaDevjani/freshbaked
 
 ---
 
